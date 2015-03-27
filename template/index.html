@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0">
+<title>test</title>
+
+<!-- css -->
+<link href="style.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="inc/TimeCircles.css" />
+<link rel="stylesheet" href="inc/bootstrap.min.css">
+
+<script type="text/javascript" src="inc/jquery.min.js"></script>
+<script type="text/javascript" src="inc/TimeCircles.js"></script>
+<script type="text/javascript" src="js/person.js"></script>
+        
+
+<!-- html5.js - IE  9 -->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<!-- css3-mediaqueries.js for IE - 9 -->
+<!--[if lt IE 9]>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+<![endif]-->
+
+</head>
+
+<body>
+
+<div id="pagewrap">
+
+	<header id="header">
+
+		<hgroup>
+            <img src="logo.png" id="logo" alt="logo"  >
+			<h1 id="site-description">Programada de ultima hora</h1>
+		</hgroup>
+
+	</header>
+	<!-- /#header -->
+	<aside id="player1" class="sidebar2">
+
+		<section class="widget">
+			<h4 class="widgettitulo name">Competidor #1</h4>
+			<img src="no-user.jpg"> 
+			<center><button class="btn btn-info restart">Ganador</button></center>
+		</section>
+		<button class="btn btn-success startTimer selectPlayer">Seleccionar competidor</button>
+						
+	</aside>
+
+	<div id="content">
+
+		
+			<div id="CountDownTimer" data-timer="60" style="width: 250px; height: 250px;"></div>
+			 <button class="btn btn-info restart">Reiniciar</button>
+            <button class="btn btn-success startTimer">Continuar</button>
+            <button class="btn btn-danger stopTimer">Pausar</button>
+            
+		
+
+  </div>
+	<!-- /#content --> 
+	
+	
+	<aside id="player2" class="sidebar2">
+		<section class="widget">
+			<h4 class="widgettitulo name">Competidor #2</h4>
+			<img src="no-user.jpg"> 
+			<center><button class="btn btn-success startTimer">Ganador</button></center>
+		</section>
+		<button class="btn btn-success startTimer selectPlayer">Seleccionar competidor</button>
+	</aside>
+	
+	<div id="reto">
+		<p><span id="tituloReto">Reto:</span> <span id="descripcionReto"> &nbsp; </span></p>
+	</div>
+    <button id="seleccionarReto" class="btn btn-danger stopTimer">Seleccionar Reto</button>
+	<aside id="sidebar">
+
+		<section class="widget">
+			<h4 class="widgettitulo" style="position: fixed; width: 230px;">Ganadores</h4>
+			<ul id="innerListaCompetidores" style = "margin-top: 40px;">
+			</ul>
+		</section>
+						
+	</aside>
+	<!-- /#sidebar -->	
+</div>
+<!-- /#pagewrap -->
+ 	<script>
+ 		
+ 		function crearCompetidor(nombreCompetidor, urlImg) {
+        var templateCompetidor = '<li><div class="competidor">'+
+                '<div class="aling-horizontal ">'+
+                    '<img width="50" height="50" src="@@URLIMG@@"></img>'+
+                '</div>'+
+                '<div class="aling-horizontal ">'+
+                    '<span>@@NOMBRECOMPETIDOR@@</span>'+
+                '</div>'+
+            '</div></li>';
+        
+        var result = templateCompetidor.replace('@@URLIMG@@',urlImg);
+        result = result.replace('@@NOMBRECOMPETIDOR@@',nombreCompetidor);
+        
+        $( "#innerListaCompetidores" ).append(result);
+            
+    	}
+    
+    	function agregarReto(tituloReto, descripcionReto) {
+	        var titulo = '<span>@@tituloReto@@</span>';
+	        var descripcion = '<span>@@descripcionReto@@</span>';
+	        
+	        titulo = titulo.replace('@@tituloReto@@',tituloReto);
+	        descripcion = descripcion.replace('@@descripcionReto@@',descripcionReto);
+	        
+	        $( "#tituloReto" ).html('');
+	        $( "#descripcionReto" ).html('');
+	        
+	        $( "#tituloReto" ).append(titulo);
+	        $( "#descripcionReto" ).append(descripcion);
+	    }
+	    function limpiarCompetidores() {
+	    }  
+ 		
+		$( document ).ready(function() {
+	        var persons = findAllPerson();
+	        console.log(persons);
+	        $.each(persons, function(i, obj) {
+	            crearCompetidor(obj.name, obj.img);
+	        });
+	        
+	        
+	        $("#seleccionarReto").on("click", function(){
+	            var challenge = selectRamdonChallenge();
+	       		agregarReto(challenge.reto, challenge.descripcion);
+	        });
+	        
+	        // $("#ganadorCompetencia").on("click", function(){
+	        //     var idGanador = this.attr('title');
+	        // });
+		});
+		
+        $("#PageOpenTimer").fadeOut();
+        $("#DateCountdown").TimeCircles();
+        $("#CountDownTimer").TimeCircles({ time: { Days: { show: false }, Hours: { show: false },Minutes: { show: false } }});
+        $("#PageOpenTimer").TimeCircles();
+        
+        var updateTime = function(){
+            var date = $("#date").val();
+            var time = $("#time").val();
+            var datetime = date + ' ' + time + ':00';
+            $("#DateCountdown").data('date', datetime).TimeCircles().start();
+        }
+        $("#date").change(updateTime).keyup(updateTime);
+        $("#time").change(updateTime).keyup(updateTime);
+        
+        // Start and stop are methods applied on the public TimeCircles instance
+        $(".startTimer").click(function() {
+            $("#CountDownTimer").TimeCircles().start();
+        });
+        $(".stopTimer").click(function() {
+            $("#CountDownTimer").TimeCircles().stop();
+        });
+		 $(".restart").click(function(){ 
+			$("#CountDownTimer").TimeCircles().restart();
+		});
+		
+		$(function(){
+			$('.selectPlayer').click(function() {
+				var parentSelector = '#' + $(this).closest('aside').prop('id');
+				$(this).prop('disabled', 'disabled');
+				showPersonsAndSelect(parentSelector);
+    		});	
+		});
+		
+    </script>  
+</body>
+</html>

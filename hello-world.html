@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<title>Iron Nine</title>
+<script src="js/person.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<link rel="stylesheet" href="../css/main.css" type="text/css" />
+       <link rel="stylesheet" href="Cronometro/inc/bootstrap.min.css">
+        <script type="text/javascript" src="Cronometro/inc/TimeCircles.js"></script>
+        <script src="Sonidos/js/ion.sound.js"></script>
+        <link rel="stylesheet" href="Cronometro/inc/TimeCircles.css" />
+        
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+</head>
+
+<body>
+	
+	<div id="player1">
+		<div class="competidor">
+            <div class="aling-horizontal ">
+                <img width="50" height="50" src=""></img>
+            </div>
+            <div class="aling-horizontal">
+                <span class="name"></span>
+            </div>
+        </div>
+	</div>
+	<button id="btnPlayer1">selecionar</button>
+	
+	<div id=player2>
+		<div class="competidor">
+            <div class="aling-horizontal ">
+                <img width="50" height="50" src=""></img>
+            </div>
+            <div class="aling-horizontal">
+                <span class="name"></span>
+            </div>
+        </div>
+	</div>
+	<button id="btnPlayer2">selecionar</button>
+	
+	<div id="listaCompetidores">
+        <div class="titulo">
+            <h4>Competidores</h4>
+        </div>
+        <div id="innerListaCompetidores">
+            <!--<div class="competidor">-->
+            <!--    <div class="aling-horizontal ">-->
+            <!--        <img width="50" height="50" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xap1/v/t1.0-1/p130x130/10995929_10206152131510256_2384641033949886069_n.jpg?oh=515451fee33fb3492c357a26cbb2603e&oe=55B367C7&__gda__=1437291794_a9716ce3a54cdf662614d8f6a83c7797"></img>-->
+            <!--    </div>-->
+            <!--    <div class="aling-horizontal ">-->
+            <!--        <span>Steven Díaz</span>-->
+            <!--    </div>-->
+            <!--</div>-->
+        </div>
+	</div>
+	
+	<div id="Cronometro">
+        <div class="container">
+            <!-- <h1>Ingenier&iacute;a en Sistemas</h1>
+            <h2>1 minuto para programar</h2>
+             -->
+        	 <div id="CountDownTimer" data-timer="60" style="width: 1000px; height: 250px;"></div>
+        	 <button class="btn btn-info restart">Reiniciar</button>
+            <button class="btn btn-success startTimer">Continuar</button>
+            <button class="btn btn-danger stopTimer">Pausar</button>
+            <hr>
+        </div>
+    </div>
+    
+    <div id="Retos">
+        <div id="tituloReto">
+            <!--<span>Calculadora</span>-->
+        </div>
+        <div id="descripcionReto">
+            <!--<span>Realizar calculadora sencilla</span>-->
+        </div>
+    </div>
+    
+    <div id="ganador">
+        <button id="ganadorCompetencia" class="btn btn-danger stopTimer" idCompetidor="">Ganador</button>
+    </div>
+    
+    
+
+<div style="position: relative; padding: 100px;">
+
+
+
+    <button id="b01">Play "beer_can_opening"</button>
+
+    <button id="b02">Play "bell_ring"</button>
+
+
+
+</div>
+
+    
+<script>
+    
+    function crearCompetidor(nombreCompetidor, urlImg) {
+        var templateCompetidor = '<div class="competidor">'+
+                '<div class="aling-horizontal ">'+
+                    '<img width="50" height="50" src="@@URLIMG@@"></img>'+
+                '</div>'+
+                '<div class="aling-horizontal ">'+
+                    '<span>@@NOMBRECOMPETIDOR@@</span>'+
+                '</div>'+
+            '</div>';
+        
+        var result = templateCompetidor.replace('@@URLIMG@@',urlImg);
+        result = result.replace('@@NOMBRECOMPETIDOR@@',nombreCompetidor);
+        
+        $( "#innerListaCompetidores" ).append(result);
+            
+    }
+    
+    function agregarReto(tituloReto, descripcionReto) {
+        var titulo = '<span>@@tituloReto@@</span>';
+        var descripcion = '<span>@@descripcionReto@@</span>';
+        
+        titulo = titulo.replace('@@tituloReto@@',tituloReto);
+        descripcion = descripcion.replace('@@descripcionReto@@',descripcionReto);
+        
+        $( "#tituloReto" ).html('');
+        $( "#descripcionReto" ).html('');
+        
+        $( "#tituloReto" ).append(titulo);
+        $( "#descripcionReto" ).append(descripcion);
+    }
+    function limpiarCompetidores() {
+        // limpiar la img y el titulo
+    }
+    
+    $( document ).ready(function() {
+    	
+         $("#CountDownTimer").TimeCircles().stop();
+        var persons = findAllPerson();
+        console.log(persons);
+        $.each(persons, function(i, obj) {
+            crearCompetidor(obj.name, obj.img);
+        });
+        
+        var challenge = selectRamdonChallenge();
+        agregarReto(challenge.reto, challenge.descripcion);
+        
+        $("#ganadorCompetencia").on("click", function(){
+            var idGanador = this.attr('title');
+        });
+        
+        //select player 1
+    	$('#btnPlayer1').click(function() {
+    		showPersonsAndSelect('#player1');
+    	});
+    	
+    	$('#btnPlayer2').click(function() {
+    		showPersonsAndSelect('#player2');
+    	});
+        
+        //Cronometro inicia pausado
+        
+         ion.sound({
+            sounds: [
+                {name: "ticktock"},
+                {name: "bell_ring"}
+            ],
+            path: "Sonidos/sounds/",
+            preload: true,
+            volume: 3.0
+        });
+
+    });
+    
+    
+    
+    //Lógica para el cronometro
+    
+		
+            $("#PageOpenTimer").fadeOut();
+            $("#DateCountdown").TimeCircles();
+            $("#CountDownTimer").TimeCircles({ time: { Days: { show: false }, Hours: { show: false },Minutes: { show: false } }});
+            $("#PageOpenTimer").TimeCircles();
+            
+            var updateTime = function(){
+                var date = $("#date").val();
+                var time = $("#time").val();
+                var datetime = date + ' ' + time + ':00';
+                $("#DateCountdown").data('date', datetime).TimeCircles().start();
+                
+              
+            }
+            $("#date").change(updateTime).keyup(updateTime);
+            $("#time").change(updateTime).keyup(updateTime);
+            
+            // Start and stop are methods applied on the public TimeCircles instance
+            $(".startTimer").click(function() {
+                $("#CountDownTimer").TimeCircles().start();
+                 setInterval(function(){ ion.sound.play("ticktock")},2000);
+               // ion.sound.play("ticktock");
+            });
+            $(".stopTimer").click(function() {
+                $("#CountDownTimer").TimeCircles().stop();
+                ion.sound.stop("ticktock");
+            });
+			 $(".restart").click(function(){ 
+				$("#CountDownTimer").TimeCircles().restart();
+			}); 
+			
+			//Sonido
+			
+		
+            
+            // Fin Cronometro
+</script>
+</body>
+</html>

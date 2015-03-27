@@ -1,0 +1,21 @@
+.img-sm
+{
+      height: 25px;
+}
+
+.img-sm img
+{
+      height: 50%;
+      width:  50%;
+}
+
+.nombre-sm
+{
+      height: 25px;
+}
+
+.aling-horizontal
+{
+    display: inline-block;
+    vertical-align: middle;
+}
