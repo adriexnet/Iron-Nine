@@ -152,22 +152,20 @@ function showPersonsAndSelect(selector){
 }
 
 function selectRamdonChallenge(){
-    //i = typeof i === 'undefined' ? 1 : i;
+    i = typeof i === 'undefined' ? 1 : i;
     
-    // if(i<100){
-    try{
+    if(i<100){
         var arrayLength = Object.keys(findAllChallenge()).length;
-        var randomIndex = Math.floor(Math.random() * firstLength() + 1);
+        var randomIndex = Math.floor(Math.random() * arrayLength + 1);
         var randomElement = findAllChallenge()[randomIndex];
         console.log(randomElement);
         if(typeof randomElement != 'undefined' && !randomElement.selected){
             randomElement.selected = true;
             return randomElement;
         }else{
-            return selectRamdonChallenge();
+            return selectRamdonChallenge(i);
         }
-    } //else {
-    catch(ex) {
+    } else {
         alert('No hay Retos disponibles!');
     }
 }
