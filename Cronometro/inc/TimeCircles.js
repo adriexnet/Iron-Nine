@@ -496,6 +496,7 @@
             }
             
             if(!nodraw) {
+         
                 // Set the text value
                 this.data.text_elements[key].text(Math.floor(Math.abs(visible_times.time[key])));
 
@@ -524,6 +525,7 @@
             }
             lastKey = key;
             j++;
+            
         }
 
         // Dont request another update if we should be paused
@@ -764,6 +766,8 @@
             if (typeof secondsIn[this.data.total_duration] !== "undefined") {
                 // If set to Years, Months, Days, Hours or Minutes, fetch the secondsIn value for that
                 this.data.total_duration = secondsIn[this.data.total_duration];
+            
+                
             }
             else if (this.data.total_duration === "Auto") {
                 // If set to auto, total_duration is the size of 1 unit, of the unit type bigger than the largest shown
@@ -800,7 +804,7 @@
 
     TC_Instance.prototype.default_options = {
         ref_date: new Date(),
-        start: true,
+        start: false,
         animation: "ticks",
         count_past_zero: false,
         circle_bg_color: "#90989F",

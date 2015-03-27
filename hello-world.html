@@ -138,7 +138,27 @@
     
     $( document ).ready(function() {
     	
-         $("#CountDownTimer").TimeCircles().stop();
+         //$("#CountDownTimer").TimeCircles().stop();
+          ion.sound({
+            sounds: [
+                {name: "tictocSeguido"},
+                {name: "tickSolo"}
+            ],
+            path: "Sonidos/sounds/",
+            preload: true,
+            volume: 1.0
+        });
+$("#CountDownTimer > div > div > span").bind("DOMSubtreeModified", function() {
+if($("#CountDownTimer > div > div > span").html()=="10")
+{
+    //setInterval(function () {ion.sound.play("tickSolo")}, 200);
+    ion.sound.stop("tictocSeguido");
+    
+    ion.sound.play("tickSolo");
+   // ion.sound.play("tickSolo");
+}
+});
+            
         var persons = findAllPerson();
         console.log(persons);
         $.each(persons, function(i, obj) {
@@ -160,19 +180,9 @@
     	$('#btnPlayer2').click(function() {
     		showPersonsAndSelect('#player2');
     	});
+    	
         
-        //Cronometro inicia pausado
-        
-         ion.sound({
-            sounds: [
-                {name: "ticktock"},
-                {name: "bell_ring"}
-            ],
-            path: "Sonidos/sounds/",
-            preload: true,
-            volume: 3.0
-        });
-
+       
     });
     
     
@@ -199,12 +209,14 @@
             // Start and stop are methods applied on the public TimeCircles instance
             $(".startTimer").click(function() {
                 $("#CountDownTimer").TimeCircles().start();
-                 setInterval(function(){ ion.sound.play("ticktock")},2000);
-               // ion.sound.play("ticktock");
+               
+                  ion.sound.play("tictocSeguido");
+              
             });
             $(".stopTimer").click(function() {
                 $("#CountDownTimer").TimeCircles().stop();
                 ion.sound.stop("ticktock");
+                 ion.sound.stop("tictocSolo");
             });
 			 $(".restart").click(function(){ 
 				$("#CountDownTimer").TimeCircles().restart();

@@ -45,7 +45,7 @@
 		<section class="widget">
 			<h4 class="widgettitulo name">Competidor #1</h4>
 			<img src="no-user.jpg"> 
-			<center><button class="btn btn-info restart">Ganador</button></center>
+			<center><button id="player1Ganador" class="btn btn-info restart winner">Ganador</button></center>
 		</section>
 		<button class="btn btn-success startTimer selectPlayer">Seleccionar competidor</button>
 						
@@ -69,19 +69,19 @@
 		<section class="widget">
 			<h4 class="widgettitulo name">Competidor #2</h4>
 			<img src="no-user.jpg"> 
-			<center><button class="btn btn-success startTimer">Ganador</button></center>
+			<center><button id="player2Ganador" class="btn btn-success startTimer winner">Ganador</button></center>
 		</section>
 		<button class="btn btn-success startTimer selectPlayer">Seleccionar competidor</button>
 	</aside>
 	
 	<div id="reto">
-		<p><span id="tituloReto">Reto:</span> <span id="descripcionReto"> &nbsp; </span></p>
+		<p><b><span id="tituloReto">Reto:</span></b> <span id="descripcionReto"> &nbsp; </span></p>
 	</div>
     <button id="seleccionarReto" class="btn btn-danger stopTimer">Seleccionar Reto</button>
 	<aside id="sidebar">
 
 		<section class="widget">
-			<h4 class="widgettitulo" style="position: fixed; width: 230px;">Ganadores</h4>
+			<h4 class="widgettitulo" style="position: fixed; width: 230px;">Competidores</h4>
 			<ul id="innerListaCompetidores" style = "margin-top: 40px;">
 			</ul>
 		</section>
@@ -91,7 +91,7 @@
 </div>
 <!-- /#pagewrap -->
  	<script>
- 		
+ 		var firstLength = 0;
  		function crearCompetidor(nombreCompetidor, urlImg) {
         var templateCompetidor = '<li><div class="competidor">'+
                 '<div class="aling-horizontal ">'+
@@ -110,7 +110,7 @@
     	}
     
     	function agregarReto(tituloReto, descripcionReto) {
-	        var titulo = '<span>@@tituloReto@@</span>';
+	        var titulo = '<span>@@tituloReto@@:</span>';
 	        var descripcion = '<span>@@descripcionReto@@</span>';
 	        
 	        titulo = titulo.replace('@@tituloReto@@',tituloReto);
@@ -122,25 +122,42 @@
 	        $( "#tituloReto" ).append(titulo);
 	        $( "#descripcionReto" ).append(descripcion);
 	    }
-	    function limpiarCompetidores() {
-	    }  
- 		
-		$( document ).ready(function() {
-	        var persons = findAllPerson();
+	    function cargarCompetidores() {
+	    	$( "#innerListaCompetidores" ).html('');
+	    	var persons = findAllPerson();
 	        console.log(persons);
 	        $.each(persons, function(i, obj) {
 	            crearCompetidor(obj.name, obj.img);
 	        });
+	    }  
+ 		
+		$( document ).ready(function() {
 	        
-	        
+	        cargarCompetidores();
+	        firstLength = Object.keys(findAllPerson()).length;
 	        $("#seleccionarReto").on("click", function(){
 	            var challenge = selectRamdonChallenge();
 	       		agregarReto(challenge.reto, challenge.descripcion);
 	        });
 	        
-	        // $("#ganadorCompetencia").on("click", function(){
-	        //     var idGanador = this.attr('title');
-	        // });
+	        $("#player1Ganador").on("click", function(){
+	            var personId = $('#player2Ganador').prop('idCompetidor');
+	            deletePersonById(personId);
+	            unselectPersonById($(this).prop('idCompetidor'));
+	            console.log($(this).prop('idCompetidor'));
+	            resetPlayers();
+	            cargarCompetidores();
+	        });
+	        
+	        $("#player2Ganador").on("click", function(){
+	            var personId = $('#player1Ganador').prop('idCompetidor');
+	            deletePersonById(personId);
+	            unselectPersonById($(this).prop('idCompetidor'));
+	            console.log($(this).prop('idCompetidor'));
+	            resetPlayers();
+	            cargarCompetidores();
+	        });
+	        
 		});
 		
         $("#PageOpenTimer").fadeOut();
